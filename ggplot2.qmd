@@ -1,0 +1,688 @@
+---
+title: "Exercise 1: Student Performance Visualization"
+author: "Taliana Pirajan"
+date: "2026-03-28"
+format:
+  html:
+    theme: flatly
+    toc: true
+    toc_float: true
+    number-sections: true
+    code-fold: false
+    code-tools: false
+    code-copy: false
+lang: es
+---
+## Data
+
+```{r}
+library(ggplot2)
+
+students <- data.frame(
+  id = 1:20,
+  hours_study = c(2,3,4,5,6,3,4,7,8,5,6,7,3,2,9,10,4,6,8,5),
+  score = c(50,55,65,70,75,60,66,80,85,72,74,78,58,52,90,95,67,76,88,73),
+  gender = rep(c("Male","Female"), 10),
+  major = rep(c("Engineering","Business","Arts","Medicine"), 5)
+)
+```
+
+##  Scatter plot
+```{r}
+ggplot(students, aes(x=hours_study, y=score)) + geom_point()
+```
+A medida que aumentan las horas de estudio, el puntaje tiende a subir, lo que muestra una relación positiva entre ambas variables.
+
+##  Blue points
+```{r}
+ggplot(students, aes(x=hours_study, y=score)) + geom_point(color="blue")
+```
+El gráfico permite observar con claridad la relación positiva entre horas de estudio y puntaje.
+
+##  Gender color
+```{r}
+ggplot(students, aes(x=hours_study, y=score, color=gender)) + geom_point()
+```
+Se observa que tanto hombres como mujeres siguen una tendencia similar en el rendimiento académico.
+
+##  Bigger points
+```{r}
+ggplot(students, aes(x=hours_study, y=score, color=gender)) + geom_point(size=4)
+```
+El aumento en el tamaño de los puntos facilita identificar mejor la distribución de los datos.
+
+##  Title + labels + minimal theme
+```{r}
+ggplot(students, aes(x=hours_study, y=score, color=gender)) +
+  geom_point(size=4) +
+  labs(title="Study Hours vs Score", x="Hours of Study", y="Score") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust=0.5),
+    axis.title = element_text(size=14),
+    legend.position = "none"
+  )
+```
+La presentación del gráfico permite ver de forma clara que al aumentar las horas de estudio también mejora el puntaje.
+
+##  Regression line
+```{r}
+ggplot(students, aes(x=hours_study, y=score)) +
+  geom_point() +
+  geom_smooth(color="red")
+```
+La línea de regresión confirma que existe una relación creciente entre las horas de estudio y el puntaje obtenido
+
+##  Boxplot
+```{r}
+ggplot(students, aes(x=gender, y=score)) + geom_boxplot()
+```
+Los puntajes presentan una distribución parecida entre ambos géneros, sin diferencias muy marcadas.
+
+##  Histogram
+```{r}
+ggplot(students, aes(x=score)) + geom_histogram(bins=5)
+```
+La mayoría de los puntajes se concentran en valores medios y altos.
+
+## facet_wrap by major
+```{r}
+ggplot(students, aes(x=hours_study, y=score)) +
+  geom_point() +
+  facet_wrap(~major)
+```
+Al separar por carrera se observa el comportamiento de cada grupo de estudiantes de forma individual
+
+##  facet_grid by gender and major
+```{r}
+ggplot(students, aes(x=hours_study, y=score)) +
+  geom_point() +
+  facet_grid(gender ~ major)
+```
+Cada carrera mantiene una tendencia positiva entre estudio y puntaje, aunque con pequeñas variaciones.
+
+## Shape by major
+```{r}
+ggplot(students, aes(x=hours_study, y=score, shape=major)) +
+  geom_point(size=3)
+```
+La forma de los puntos permite diferenciar mejor cada carrera y comparar su comportamiento.
+
+## Combined aesthetics
+```{r}
+ggplot(students, aes(x=hours_study, y=score, color=gender, size=score)) +
+  geom_point() +
+  geom_smooth(color="black") +
+  theme_minimal()
+```
+Se observa que el puntaje aumenta junto con las horas de estudio y que el tamaño de los puntos resalta los valores más altos.
+
+##"Punto 2: Exercise Business Data Visualization with ggplot2"
+Taliana Pirajan
+2026-03-28
+
+## Creación de la base de datos
+
+```{r}
+library(ggplot2)
+
+sales <- data.frame(
+  month = rep(month.abb[1:12], 4),
+  region = rep(c("North","South","East","West"), each = 12),
+  sales = c(
+    120,130,125,140,150,160,170,165,155,145,135,125,
+    100,110,105,120,130,135,140,138,132,125,118,110,
+    90,95,100,110,115,120,125,123,118,112,105,98,
+    80,85,88,95,100,105,110,108,102,97,90,85
+  ),
+  marketing_spend = c(
+    20,22,21,23,25,26,28,27,26,24,23,22,
+    18,19,18,20,22,23,24,23,22,21,20,19,
+    15,16,17,18,19,20,21,20,19,18,17,16,
+    12,13,14,15,16,17,18,17,16,15,14,13
+  ),
+  employees = rep(c(50,45,40,35), each = 12)
+)
+```
+
+##  Scatter plot of marketing_spend vs sales
+
+```{r}
+ggplot(sales, aes(marketing_spend, sales)) +
+  geom_point()
+```
+
+En este gráfico se observa de manera general cómo se relaciona la inversión en marketing con el nivel de ventas.
+
+##  Change point color to dark green
+
+```{r} 
+ggplot(sales, aes(marketing_spend, sales)) +
+  geom_point(color = "darkgreen")
+```
+
+El color verde facilita distinguir mejor cada observación.
+
+## Map region to color
+
+```{r} 
+ggplot(sales, aes(marketing_spend, sales, color = region)) +
+  geom_point()
+```
+
+Cada región aparece diferenciada visualmente.
+
+## Increase point size
+
+```{r} 
+ggplot(sales, aes(marketing_spend, sales)) +
+  geom_point(size = 3)
+```
+
+El tamaño mejora la lectura de puntos.
+
+## Add plot title
+
+```{r}
+ggplot(sales, aes(marketing_spend, sales)) +
+  geom_point() +
+  ggtitle("Sales vs Marketing Investment")
+```
+
+El título resume el análisis.
+
+## Add axis labels
+
+```{r} 
+ggplot(sales, aes(marketing_spend, sales)) +
+  geom_point() +
+  labs(x = "Marketing Spend", y = "Sales")
+```
+
+Las etiquetas aclaran el significado de variables.
+
+## Use theme_minimal()
+
+```{r} 
+ggplot(sales, aes(marketing_spend, sales)) +
+  geom_point() +
+  theme_minimal()
+```
+
+La presentación visual se vuelve más limpia.
+
+## Center title
+
+```{r} 
+ggplot(sales, aes(marketing_spend, sales)) +
+  geom_point() +
+  ggtitle("Sales vs Marketing Investment") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+El título centrado mejora equilibrio visual.
+
+## Change axis text size
+
+```{r}
+ggplot(sales, aes(marketing_spend, sales)) +
+  geom_point() +
+  theme(axis.text = element_text(size = 12))
+```
+
+Facilita la lectura.
+
+## Place legend at bottom
+
+```{r} 
+ggplot(sales, aes(marketing_spend, sales, color = region)) +
+  geom_point() +
+  theme(legend.position = "bottom")
+```
+
+La leyenda se organiza mejor.
+
+## Create line plot
+
+```{r} 
+ggplot(sales, aes(month, sales)) +
+  geom_line()
+```
+
+Se observa evolución mensual de ventas.
+
+## Map region to line color
+
+```{r} 
+ggplot(sales, aes(month, sales, color = region, group = region)) +
+  geom_line()
+```
+
+Cada región muestra tendencia propia.
+
+## Add points
+
+```{r} 
+ggplot(sales, aes(month, sales, color = region, group = region)) +
+  geom_line() +
+  geom_point()
+```
+
+Cada mes queda marcado visualmente.
+
+## Rotate x-axis labels
+
+```{r} 
+ggplot(sales, aes(month, sales, color = region, group = region)) +
+  geom_line() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Los meses se leen mejor.
+
+## Highlight North region
+
+```{r} 
+ggplot(subset(sales, region == "North"), aes(month, sales, group = 1)) +
+  geom_line(color = "blue") +
+  geom_point()
+```
+
+Se analiza solo la región North.
+
+## Boxplot of sales by region
+
+```{r}
+ggplot(sales, aes(region, sales)) +
+  geom_boxplot()
+```
+
+Permite comparar dispersión de ventas.
+
+## Histogram of marketing_spend
+
+```{r} 
+ggplot(sales, aes(marketing_spend)) +
+  geom_histogram(bins = 10)
+```
+
+Muestra frecuencia de inversión.
+
+## Create line plots faceted by region
+
+```{r}
+ggplot(sales, aes(month, sales, group = 1)) +
+  geom_line() +
+  facet_wrap(~region)
+```
+
+Cada región aparece separada.
+
+## Use facet_wrap()
+
+```{r} 
+ggplot(sales, aes(month, sales, group = 1)) +
+  geom_line() +
+  facet_wrap(~region)
+```
+
+Facilita comparación visual.
+
+## Multi-aesthetic plot
+
+```{r} 
+ggplot(sales, aes(marketing_spend, sales,
+                  color = region,
+                  size = employees)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal()
+```
+
+Integra varias variables en un solo análisis.
+
+##"Punto 3: Exercises with Kaggle Dataset (Customer Churn)"
+Taliana Pirajan
+2026-03-28 
+```{r}
+library(ggplot2)
+
+datos_churn <- data.frame(
+  tenure = c(1,5,10,12,24,36,48,60,72,3,6,9,15,18,30,42,54,66,70,8),
+
+  monthly_charges = c(
+    70,75,80,85,90,95,100,105,110,65,
+    72,78,82,88,92,98,102,108,112,76
+  ),
+
+  total_charges = c(
+    70,375,800,1020,2160,3420,4800,6300,7920,195,
+    432,702,1230,1584,2760,4116,5508,7128,7840,608
+  ),
+
+  churn = rep(c("Yes","No"), 10),
+
+  contract = rep(
+    c("Month-to-month","One year","Two year","Month-to-month"), 5
+  ),
+
+  internet_service = rep(
+    c("DSL","Fiber optic","DSL","No"), 5
+  )
+)
+
+
+```
+## Scatter plot: tenure vs monthly_charges
+
+```{r}
+ggplot(datos_churn, aes(x=tenure, y=monthly_charges)) +
+  geom_point()
+```
+
+Se observa una relación creciente entre la permanencia del cliente y los cargos mensuales.
+
+## Color points by churn
+
+```{r}
+ggplot(datos_churn, aes(x=tenure, y=monthly_charges, color=churn)) +
+  geom_point()
+```
+
+ Los clientes con churn y sin churn muestran comportamientos similares en distintos niveles de permanencia.
+
+## Add regression line
+
+```{r}
+ggplot(datos_churn, aes(x=tenure, y=monthly_charges, color=churn)) +
+  geom_point() +
+  geom_smooth(method="lm", se=FALSE, linewidth=1, aes(group=1))
+```
+
+La línea muestra una tendencia positiva entre permanencia y cargos mensuales.
+
+## Use minimal theme
+
+```{r}
+ggplot(datos_churn, aes(x=tenure, y=monthly_charges, color=churn)) +
+  geom_point() +
+  theme_minimal()
+```
+
+ El gráfico mantiene la misma tendencia con una presentación más limpia.
+
+## Add plot title
+
+```{r}
+ggplot(datos_churn, aes(x=tenure, y=monthly_charges)) +
+  geom_point() +
+  ggtitle("Customer Charges vs Tenure")
+```
+
+Se identifica visualmente la relación entre permanencia y cargos.
+
+## Boxplot: monthly_charges by churn
+
+```{r}
+ggplot(datos_churn, aes(x=churn, y=monthly_charges)) +
+  geom_boxplot()
+```
+
+Los cargos mensuales presentan una distribución parecida entre ambos grupos.
+
+## Histograma: Tenure
+
+```{r}
+ggplot(datos_churn, aes(tenure)) +
+  geom_histogram()
+```
+
+ La permanencia se distribuye en distintos intervalos de clientes.
+
+## Change Histogram bins
+
+```{r}
+ggplot(datos_churn, aes(tenure)) +
+  geom_histogram(bins=5)
+```
+
+ Con menos intervalos se observa una agrupación más general.
+
+## Violin plot: monthly_charges by contract
+
+```{r}
+ggplot(datos_churn, aes(contract, y=monthly_charges)) +
+  geom_violin()
+```
+
+ Cada tipo de contrato presenta distinta concentración de cargos.
+
+## Density plot: monthly_charges colored by churn
+
+```{r}
+ggplot(datos_churn, aes(monthly_charges, fill=churn)) +
+  geom_density(alpha=0.5)
+```
+
+ La densidad permite comparar cómo se distribuyen los cargos mensuales.
+
+## Bar plot: count customers by contract
+
+```{r}
+ggplot(datos_churn, aes(contract)) +
+  geom_bar()
+```
+
+ Se observa la frecuencia de clientes por contrato.
+
+## Bar plot filled by churn
+
+```{r}
+ggplot(datos_churn, aes(contract, fill=churn)) +
+  geom_bar()
+```
+
+ Se compara churn dentro de cada contrato.
+
+## Facet scatter plot by internet_service
+
+```{r}
+ggplot(datos_churn, aes(tenure, monthly_charges)) +
+  geom_point() +
+  facet_wrap(~internet_service)
+```
+
+ Cada servicio de internet muestra comportamientos distintos.
+
+## Facet wrap by contract
+
+```{r}
+ggplot(datos_churn, aes(tenure, monthly_charges)) +
+  geom_point() +
+  facet_wrap(~contract)
+```
+
+ El comportamiento cambia según el contrato.
+
+## Line plot: average monthly charges by tenure
+
+```{r}
+ggplot(datos_churn, aes(tenure, monthly_charges)) +
+  stat_summary(fun=mean, geom="line")
+```
+
+ La media de cargos varía conforme aumenta la permanencia.
+
+## Scatter plot
+
+```{r}
+ggplot(datos_churn, aes(x=tenure, y=total_charges, color=churn, size=monthly_charges)) +
+  geom_point()
+```
+
+ Los cargos totales aumentan con la permanencia.
+
+## Jitter plot: tenure vs churn
+
+```{r}
+ggplot(datos_churn, aes(x=churn, y=tenure)) +
+  geom_jitter()
+```
+
+Se visualiza mejor la dispersión de permanencia por grupo.
+
+## Add transparency to scatter plot
+
+```{r}
+ggplot(datos_churn, aes(x=tenure, y=monthly_charges)) +
+  geom_point(alpha=0.4)
+```
+
+ La transparencia facilita observar puntos superpuestos.
+
+## Customize legend position
+
+```{r}
+ggplot(datos_churn, aes(x=tenure, y=monthly_charges, color=churn)) +
+  geom_point() +
+  theme(legend.position="bottom")
+```
+
+ La leyenda se ubica abajo para una lectura más cómoda.
+
+## Create publication-style visualization
+
+```{r}
+ggplot(datos_churn, aes(x=tenure, y=monthly_charges, color=churn)) +
+  geom_point(size=3) +
+  geom_smooth(method="lm", se=FALSE, linewidth=2, aes(group=1)) +
+  theme_minimal() +
+  labs(
+    title="Customer Churn Analysis",
+    x="Tenure",
+    y="Monthly Charges"
+  )
+```
+
+La visualización resume la tendencia general entre permanencia y cargos mensuales.
+
+##"Punto 4: Telco Customer Churn" 
+Taliana Pirajan
+2026-03-29
+---
+```{r}
+library(readr)
+library(tidyverse)
+
+churn <- read_csv("C:/Users/Tatiana/Downloads/archive/WA_Fn-UseC_-Telco-Customer-Churn.csv")
+
+names(churn) <- tolower(names(churn))
+
+churn$churn <- as.factor(churn$churn)
+churn$contract <- as.factor(churn$contract)
+churn$internetservice <- as.factor(churn$internetservice)
+
+head(churn)
+```
+# Plot tenure distribution
+
+## Ternure 
+```{r}
+ggplot(churn, aes(tenure)) +
+  geom_histogram(bins = 30)
+```
+ La mayor parte de los clientes se concentra en pocos meses de permanencia.
+
+
+## Plot monthly charges distribution
+```{r}
+ggplot(churn, aes(monthlycharges)) +
+  geom_histogram(bins = 30)
+```
+ Los cargos mensuales se distribuyen en varios rangos.
+
+## Plot total charges distribution
+```{r}
+ggplot(churn, aes(totalcharges)) +
+  geom_histogram(bins = 30)
+``` 
+Los cargos totales presentan mayor frecuencia en valores bajos.
+
+## Bar plot: churn proportion
+```{r}
+ggplot(churn, aes(churn)) +
+  geom_bar()
+``` 
+ Hay más clientes que permanecen que clientes que cancelan.
+
+## Boxplot: monthly charges vs churn
+```{r}
+ggplot(churn, aes(churn, monthlycharges)) +
+  geom_boxplot()
+```
+ Se observan diferencias en los cargos mensuales según cancelación.
+
+## Density plot: monthly charges by churn
+```{r}
+ggplot(churn, aes(monthlycharges, fill = churn)) +
+  geom_density(alpha = 0.4)
+```
+ La distribución permite comparar ambos grupos.
+
+## Churn by contract type
+```{r}
+ggplot(churn, aes(contract, fill = churn)) +
+  geom_bar(position = "fill")
+```
+ El contrato influye en la permanencia del cliente.
+
+## Churn by internet service
+```{r}
+ggplot(churn, aes(internetservice, fill = churn)) +
+  geom_bar(position = "fill")
+```
+El servicio de internet muestra diferencias en cancelación.
+
+## Charges vs tenure
+```{r}
+ggplot(churn, aes(tenure, monthlycharges)) + geom_point(alpha = 0.4)
+```
+Se observa cómo cambian los cargos mensuales según el tiempo de permanencia.
+
+## Charges vs tenure colored by churn
+```{r}
+ggplot(churn, aes(tenure, monthlycharges, color = churn)) + geom_point(alpha = 0.4)
+```
+Los clientes que cancelan y los que permanecen presentan comportamientos distintos.
+
+##  Add regression line
+```{r}
+ggplot(churn, aes(tenure, monthlycharges, color = churn)) + geom_point(alpha = 0.4) + geom_smooth(method = "lm")
+```
+La línea muestra la tendencia general entre permanencia y cargos mensuales.
+
+## Facet by contract
+```{r}
+ggplot(churn, aes(tenure, monthlycharges)) + geom_point(alpha = 0.4) + facet_wrap(~contract)
+```
+Cada tipo de contrato presenta una distribución diferente.
+
+## Facet by internet service
+```{r}
+ggplot(churn, aes(tenure, monthlycharges)) + geom_point(alpha = 0.4) + facet_wrap(~internetservice)
+```
+El servicio de internet también influye en el comportamiento de los datos.
+
+## Bubble plot
+```{r}
+ggplot(churn, aes(tenure, totalcharges, size = monthlycharges, color = churn)) + geom_point(alpha = 0.6)
+```
+El tamaño de los puntos permite comparar mejor los cargos mensuales.
+
+## Publication-style plot
+```{r}
+ggplot(churn, aes(tenure, monthlycharges, color = churn)) + geom_point(alpha = 0.4) + geom_smooth(se = FALSE) + theme_minimal() + labs(title = "Customer Churn Analysis", x = "Customer Tenure", y = "Monthly Charges")
+```
+La gráfica resume de forma clara la relación entre permanencia y cargos.
+
+
