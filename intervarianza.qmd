@@ -1,0 +1,96 @@
+---
+title: "Intervarianza"
+author: "Taliana Pirajan"
+date: "2026-03-31"
+format:
+  html:
+    theme: flatly
+    toc: true
+    toc_float: true
+    number-sections: true
+    code-fold: show
+    code-tools: true
+    code-copy: hover
+lang: es
+editor: source
+
+---
+En este archivo se va a analizar un conjunto de datos los caules corresponder a tres poblaciones (mañana, tarde, noche) con ellos avaluaremos la variabilidad entre e intra grupos. Se calculararn medidas como la media, varianza, intervarianza e intravarianza.
+
+## Datos 
+son 3 grupos los cuales hacen representacion a dierentes jornadas acdemicas.Cada una de ellas contiene las notas en valores numericos.
+
+```{r}
+mañana <- c(4.0, 3.5, 3.8, 3.6, 4.1)
+tarde  <- c(3.8, 3.5, 3.0, 2.9)
+noche  <- c(3.1, 2.5, 2.6)
+```
+## Media mañana 
+```{r}
+mean(mañana)
+```
+## Tamaño mañana
+```{r}
+length(mañana)
+```
+## Varianza mañana 
+```{r}
+(length(mañana)-1)/length(mañana)*var(mañana)
+```
+## media tarde
+```{r}
+mean(tarde)
+```
+## tamaño tarde 
+```{r}
+length(tarde)
+```
+##Varianza tarde 
+```{r}
+(length(tarde)-1)/length(tarde)*var(tarde)
+```
+## media noche
+```{r}
+mean(noche)
+```
+## tamaño noche
+```{r}
+length(noche)
+```
+## Varianza noche 
+```{r}
+(length(noche)-1)/length(noche)*var(noche)
+```
+## intervarianza
+Nos indica cuanto cambia un grupo respecto a otro, si los pomedios de los grupos estan muy saparados o si son parecidos entre si.
+
+```{r}
+todos <- c(mañana, tarde, noche)
+mean(todos)
+```
+```{r}
+intervarianza <- (
+  length(mañana) * (mean(mañana) - mean(todos))^2 +
+  length(tarde) * (mean(tarde) - mean(todos))^2 +
+  length(noche) * (mean(noche) - mean(todos))^2
+) / (12)
+intervarianza
+```
+## Intravarianza
+Representa cuanto se dispersa los datos internos respecto a la media de los grupos.
+```{r}
+intravarianza <- (
+  (length(mañana)-1)/length(mañana)*var(mañana) * 5 +
+  (length(tarde)-1)/length(tarde)*var(tarde) * 4 +
+  (length(noche)-1)/length(noche)*var(noche) * 3
+) / (12)
+intravarianza
+```
+## Conclusion
+En general, los resultados muestran que sí hay diferencias entre los tres grupos. La jornada de mañana tiene el promedio más alto, seguida por tarde, mientras que noche presenta el promedio más bajo.
+
+Además, la intervarianza es mayor que la intravarianza, lo que indica que las diferencias entre los grupos son más notorias que la variación dentro de cada uno. Esto permite concluir que las jornadas no se comportan igual y que sus medias presentan cambios visibles.
+
+
+
+

@@ -1,0 +1,201 @@
+---
+title: "Dylyr"
+author: "Taliana Pirajan"
+date: "2026-03-30"
+format:
+  html:
+    theme: flatly
+    toc: true
+    toc_float: true
+    number-sections: true
+    code-fold: show
+    code-tools: false
+    code-copy: false
+lang: es
+editor: source
+---
+```{r}
+library(dplyr)
+library(gapminder)
+library(tidyr)
+```
+## Select only the columns country, year, and lifeExp.
+
+```{r}
+gapminder %>%
+  select(country, year, lifeExp)
+```
+Solo se selcciona las columnas necesarias para enfocarnos en la ezperanza de vida por pais y año.
+
+## Filter the dataset to show only observations from the year 2007.
+```{r}
+gapminder %>%
+  filter(year == 2007)
+```
+Aquí solo me enfoco en los datos del año 2007 para enfocarme en lo más reciente.
+
+## Filter the dataset for countries in Asia.
+```{r}
+gapminder %>%
+  filter(continent=="Asia")
+```
+Solo veo los países que están en Asia para entender cómo les va ahí sin mezclar con otros lugares.
+
+## Select rows where life expectancy is greater than 70.
+```{r}
+gapminder %>%
+  filter(lifeExp > 70 )
+```
+miro los qué países tienen una esperanza de vida arriba de 70 años, dónde la gente vive más tiempo.
+
+## Arrange the dataset by life expectancy in ascending order
+```{r}
+gapminder %>%
+  arrange(lifeExp)
+```
+Ordeno los países desde los que tienen la esperanza de vida más baja hasta la más alta para ver quién está peor y quién mejor.
+
+## Arrange the dataset by GDP per capita in descending order.
+```{r}
+gapminder %>% 
+  arrange(desc(gdpPercap))
+```
+Ordeno los países de mayor a menor ingreso por persona para ver cuáles son los más ricos.
+
+## Create a new column gdp_total as gdpPercap * pop.
+```{r}
+gapminder %>% 
+  mutate(gdp_total=gdpPercap * pop)
+```
+Hago una columna nueva que me dice el PIB total multiplicando el ingreso por persona por la población. Así sé qué tan grande es la economía de cada país.
+
+## Filter countries with population greater than 100 million in 2007.
+```{r}
+gapminder %>%
+  filter(year == 2007, pop > 100000000 )
+```
+Aquí filtro los países que tienen más de 100 millones de habitantes, los que tienen mucha gente.
+
+## Select countries from Europe and display only country and gdpPercap
+```{r}
+gapminder %>%
+  filter(continent =="europe") %>%
+  select(country, gdpPercap)
+```
+Solo me quedo con los países de Europa y las columnas que me interesan para ver cómo están económicamente.
+
+## Compute the average life expectancy for each continent
+```{r}
+gapminder %>%
+  group_by(continent)  %>% 
+  summarise(avg_lifeExp = mean(lifeExp))
+```
+Calculo el promedio de esperanza de vida en cada continente para comparar cómo les va en salud.
+## Compute the average GDP per capita for each continent and year.
+```{r}
+gapminder %>%
+  group_by(continent, year) %>%
+  summarise(avg_gdpPercap = mean (gdpPercap))
+```
+Veo cómo ha cambiado el ingreso promedio por persona en cada continente con el paso del tiempo.
+
+## Find the maximum life expectancy for each continent.
+```{r}
+gapminder %>%
+  group_by(continent) %>%
+  summarise(max_lifeExp = max(lifeExp))
+```
+Busco cuál es la esperanza de vida más alta que hay en cada continente.
+
+## Count how many countries are in each continent.
+```{r}
+gapminder %>%
+  group_by(continent) %>%
+  summarise(n_countries = n_distinct(country))
+```
+Cuento cuántos países hay en cada continente para tener una idea del tamaño del grupo.
+
+## For each continent, compute the total population.
+```{r}
+gapminder %>% 
+  group_by(continent) %>%
+  summarise(total_pop = sum(pop))
+```
+Sumo toda la gente que hay en cada continente para ver cuál tiene más población.
+
+## Filter the dataset for the Americas and compute the average life expectancy by year
+```{r}
+gapminder %>%
+  filter(continent == "Americas") %>%
+  group_by(year) %>%
+  summarise(avg_lifeExp = mean(lifeExp))
+```
+Solo veo los países de América y calculo cómo ha cambiado la esperanza de vida a lo largo de los años.
+
+## Create a dataset with the top 10 countries with highest GDP per capita in 2007.
+```{r}
+gapminder %>% 
+  filter(year == 2007 )%>% 
+  arrange(desc(gdpPercap))%>% 
+  slice_max(gdpPercap, n = 10)
+  
+```
+Encuentro los 10 países con más ingreso por persona en 2007 para ver quiénes son los más ricos.
+
+## Find the country with the highest life expectancy in each year.
+```{r}
+gapminder %>%
+  group_by(year) %>%
+slice_max(lifeExp, n = 1)
+```
+Cada año busco cuál país tuvo la mayor esperanza de vida.
+
+## Compute the median GDP per capita for each continent.
+```{r}
+gapminder %>%
+  group_by(continent) %>%
+  summarise(median_gdpPercap = median(gdpPercap))
+```
+Calculo la mediana del ingreso por persona para cada continente, que ayuda a no dejarse llevar por números raros.
+
+## For each country, calculate the change in life expectancy between 1952 and 2007.
+```{r}
+gapminder %>%
+ filter(year %in% c(1952, 2007)) %>%
+ select(country, year, lifeExp) %>%
+ pivot_wider(names_from = year, values_from = lifeExp) %>%
+ mutate(change_lifeExp = `2007` - `1952`)
+```
+Miro cuánto cambió la esperanza de vida en cada país entre 1952 y 2007 para ver quién mejoró más.
+
+## Identify the 5 countries with the largest increase in GDP per capita over time
+```{r}
+gapminder %>%
+  filter(year %in% c(1952, 2007)) %>%
+  select(country, year, gdpPercap) %>%
+  pivot_wider(names_from = year, values_from = gdpPercap) %>%
+  mutate(change = `2007` - `1952`) %>%
+  slice_max(change, n = 5)
+```
+Busco los 5 países que más crecieron en ingreso por persona con el tiempo.
+
+## Notes Adittional
+```{r}
+gapminder %>%
+  filter(year %in% c(1952, 2007)) %>%
+  select(country, year, lifeExp) %>%
+  pivot_wider(names_from = year, values_from = lifeExp) %>%
+  mutate(change_lifeExp = `2007` - `1952`)
+```
+En esta parte vuelvo a hacer el cálculo del cambio en la esperanza de vida entre 1952 y 2007, pero la dejo aparte para usarla después o para revisarla con más calma.
+
+  
+
+```
+
+
+
+
+
+
+
